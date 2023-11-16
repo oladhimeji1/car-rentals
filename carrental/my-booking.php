@@ -93,13 +93,37 @@ if($query->rowCount() > 0)
 {
 foreach($results as $result)
 { ?>
-<section class="user_profile inner_pages">
-  <div class="container">
+<script>
+//   function printDiv(divId) {
+//     var content = document.getElementById(divId).cloneNode(true);
+//     var printWindow = window.open('', '_blank');
+//     printWindow.document.open();
+//     printWindow.document.head.innerHTML = '<title>Print</title>';
+//     printWindow.document.body.appendChild(content);
+//     printWindow.document.close();
+//     printWindow.print();
+// }
+function printDiv(divId) {
+    var content = document.getElementById(divId).cloneNode(true);
+    
+    // Append the cloned content to the body
+    document.body.appendChild(content);
+
+    // Use window.print() directly on the current window
+    window.print();
+
+    // Remove the appended content after printing
+    document.body.removeChild(content);
+}
+
+</script>
+<section class="user_profile inner_pages" >
+  <div class="container" >
     <div class="user_profile_info gray-bg padding_4x4_40">
       <div class="upload_user_logo"> <img src="assets/images/dealer-logo.jpg" alt="image">
       </div>
 
-      <div class="dealer_info">
+      <div class="dealer_info" id="receipt">
         <h5><?php echo htmlentities($result->FullName);?></h5>
         <p><?php echo htmlentities($result->Address);?><br>
           <?php echo htmlentities($result->City);?>&nbsp;<?php echo htmlentities($result->Country); }}?></p>
@@ -216,10 +240,13 @@ $_SESSION['vid']=$result->vid;
             </ul>
           </div>
         </div>
+        <button class="btn outline btn-xs active-btn" onclick="printDiv('receipt')">Print Reciept</button>
       </div>
     </div>
   </div>
+  
 </section>
+
 <!--/my-vehicles--> 
 <?php include('includes/footer.php');?>
 

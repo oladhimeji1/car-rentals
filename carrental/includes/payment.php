@@ -25,7 +25,7 @@
     
    
     
-    function makePayment($price, $useremail){
+    function makePayment($price,$useremail){
         // echo "<script>console.log($price)</script>";
     $url = "https://api.paystack.co/transaction/initialize";
 
