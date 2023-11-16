@@ -69,7 +69,7 @@ if (isset($_POST['submit'])) {
     $selectedDriver = "SELECT `id`, `DriverName`, `DriverPhone` FROM `tbldrivers` WHERE id = $randomDriver";
     // $selectedDriver = "SELECT `id`, `DriverName`, `DriverPhone` FROM `tbldrivers` "; // Use :id as a parameter
     $query = $dbh->prepare($selectedDriver);
-    $query->bindParam(':id', $vhid, PDO::PARAM_INT); // Use $vhid instead of $id
+    // $query->bindParam(':id', $vhid, PDO::PARAM_INT); // Use $vhid instead of $id
     $query->execute();
     $results = $query->fetchAll(PDO::FETCH_OBJ);
     $cnt = 1;

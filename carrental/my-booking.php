@@ -1,7 +1,9 @@
 <?php
 session_start();
-error_reporting(0);
+include('includes/payment.php');
+error_reporting(1);
 include('includes/config.php');
+// makePayment();
 if(strlen($_SESSION['login'])==0)
   { 
 header('location:index.php');
@@ -137,10 +139,33 @@ foreach($results as $result)
                   <div style="float: left"><p><b>Driver Phone:</b> <?php echo htmlentities($result->DriverPhone);?> </p></div>
                 </div>
                 <?php if($result->Status==1)
+                  
+                  
                 { ?>
-                <div class="vehicle_status"> <a href="#" class="btn outline btn-xs active-btn">Confirmed</a>
+
+                <!-- // Check if the form is submitted and call the function <hp if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
+                      $name = $_POST["name"];
+                      makePayment($result->PricePerDay, $result->userEmail);
+                  }else{}
+                  ?> -->
+                  <!-- <script>
+                    function submitForm() {
+                        // Get the form element
+                        var form = document.getElementById("myForm");
+                        
+                        // Submit the form
+                        form.submit();
+                    }
+                    </script> -->
+                <div class="vehicle_status"> <p class="">Booking Confirmed</p>
+                  <form method="post" id="myForm">
+                      <!-- <input type="text" id="name" name="name">
+                      <button type="button" onclick="submitForm()">Say Hello</button> -->
+                           <div class="clearfix"></div></div>
+                <div class="vehicle_status"> <button type='submit' class="btn outline btn-xs active-btn">Make Payment</button>
                            <div class="clearfix"></div>
-        </div>
+                  </div>
+                  </form>
 
               <?php } else if($result->Status==2) { ?>
  <div class="vehicle_status"> <a href="#" class="btn outline btn-xs">Cancelled</a>
