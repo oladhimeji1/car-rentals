@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3302
--- Generation Time: Nov 13, 2023 at 11:38 AM
+-- Generation Time: Nov 16, 2023 at 03:55 AM
 -- Server version: 10.4.22-MariaDB
 -- PHP Version: 7.4.27
 
@@ -58,6 +58,8 @@ CREATE TABLE `tblbooking` (
   `Status` int(11) DEFAULT NULL,
   `DriverName` varchar(60) NOT NULL,
   `DriverPhone` int(15) NOT NULL,
+  `amount` varchar(15) NOT NULL,
+  `ref` varchar(35) NOT NULL,
   `PostingDate` timestamp NOT NULL DEFAULT current_timestamp(),
   `LastUpdationDate` timestamp NULL DEFAULT NULL ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -66,11 +68,13 @@ CREATE TABLE `tblbooking` (
 -- Dumping data for table `tblbooking`
 --
 
-INSERT INTO `tblbooking` (`id`, `BookingNumber`, `userEmail`, `VehicleId`, `FromDate`, `ToDate`, `message`, `Status`, `DriverName`, `DriverPhone`, `PostingDate`, `LastUpdationDate`) VALUES
-(1, 123456789, 'test@gmail.com', 1, '2020-07-07', '2020-07-09', 'What  is the cost?', 1, 'Alabi John', 1234567895, '2020-07-07 14:03:09', NULL),
-(2, 987456321, 'test@gmail.com', 4, '2020-07-19', '2020-07-24', 'hfghg', 1, 'David Johnson', 12457895, '2020-07-09 17:49:21', '2023-11-13 08:45:08'),
-(3, 314711238, 'test1@gmail.com', 5, '2023-11-03', '2023-11-04', 'testing', 1, 'Rufus Rufus', 123456789, '2023-11-02 21:19:43', '2023-11-13 08:46:06'),
-(4, 552461874, 'test1@gmail.com', 2, '2023-11-05', '2023-11-08', 'This will be okay for my trip.', 1, 'Rufus Rufus', 123456789, '2023-11-05 01:27:33', '2023-11-13 08:46:30');
+INSERT INTO `tblbooking` (`id`, `BookingNumber`, `userEmail`, `VehicleId`, `FromDate`, `ToDate`, `message`, `Status`, `DriverName`, `DriverPhone`, `amount`, `ref`, `PostingDate`, `LastUpdationDate`) VALUES
+(1, 123456789, 'test@gmail.com', 1, '2020-07-07', '2020-07-09', 'What  is the cost?', 1, 'Alabi John', 1234567895, '', '', '2020-07-07 14:03:09', NULL),
+(2, 987456321, 'test@gmail.com', 4, '2020-07-19', '2020-07-24', 'hfghg', 1, 'David Johnson', 12457895, '', '', '2020-07-09 17:49:21', '2023-11-13 08:45:08'),
+(3, 314711238, 'test1@gmail.com', 5, '2023-11-03', '2023-11-04', 'testing', 1, 'Rufus Rufus', 123456789, '', '', '2023-11-02 21:19:43', '2023-11-13 08:46:06'),
+(4, 552461874, 'test1@gmail.com', 2, '2023-11-05', '2023-11-08', 'This will be okay for my trip.', 1, 'Rufus Rufus', 123456789, '', '', '2023-11-05 01:27:33', '2023-11-13 08:46:30'),
+(5, 404728770, 'test1@gmail.com', 3, '2023-11-13', '2023-11-13', 'I neede this for just a day', 0, '', 0, '', '', '2023-11-13 21:54:13', NULL),
+(6, 603308415, 'test1@gmail.com', 3, '2023-11-14', '2023-11-22', 'Testing again', 1, 'Deji Sunday', 2147483647, '', '', '2023-11-13 21:56:49', '2023-11-13 21:58:07');
 
 -- --------------------------------------------------------
 
@@ -394,7 +398,7 @@ ALTER TABLE `admin`
 -- AUTO_INCREMENT for table `tblbooking`
 --
 ALTER TABLE `tblbooking`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `tblbrands`
