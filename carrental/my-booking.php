@@ -145,7 +145,7 @@ foreach($results as $result)
 
                 <!-- // Check if the form is submitted and call the function <hp if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
                       $name = $_POST["name"];
-                      makePayment($result->PricePerDay);
+                      makePayment($result->PricePerDay, $result->userEmail);
                   }else{}
                   ?> -->
                   <!-- <script>

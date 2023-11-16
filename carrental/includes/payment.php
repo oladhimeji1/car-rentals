@@ -1,11 +1,11 @@
 <?php
-    function makePayment($price){
+    function makePayment($price, $userEmail){
         // echo "<script>console.log($price)</script>";
     $url = "https://api.paystack.co/transaction/initialize";
 
     $fields = [
-        'email' => "ola@email.com",
-        'amount' => "70000",
+        'email' => "$userEmail",
+        'amount' => "$price",
     ];
 
     $fields_string = http_build_query($fields);
