@@ -1,6 +1,6 @@
 <?php
     function makePayment($price, $userEmail){
-        // echo "<script>console.log($price)</script>";
+        
     $url = "https://api.paystack.co/transaction/initialize";
 
     $fields = [
@@ -30,7 +30,6 @@
 
     $responseObject = json_decode($result, false);
     
-    // {"status": authorization URL created","data":{"authorization_url":"https://checkout.paystack.com/sq1tu3g4hpugl4n","access_code":"sq1tu3g4hpugl4n","reference":"zxjs85sljk"}} 
     $reference = $responseObject->data->reference;
 
     // Check if the status is true
@@ -38,12 +37,10 @@
         // Get the authorization URL
         $authorizationUrl = $responseObject->data->authorization_url;
         // Redirect the user to the authorization URL
-        // header("Location: $authorizationUrl");
+        header("Location: $authorizationUrl");
         // exit();
         verify($reference);
     } else {
-        // Handle the case where the status is not true
-        // echo "Error: Unable to get authorization URL";
         echo "<script>console.log('Error: Unable to get authorization URL');</script>";
     }
 }
@@ -97,6 +94,6 @@
     
         }
     }
-
+    // makePayment(70000, 'ola1@gmail.com');
 ?>
 <!-- {"status": authorization URL created","data":{"authorization_url":"https://checkout.paystack.com/sq1tu3g4hpugl4n","access_code":"sq1tu3g4hpugl4n","reference":"zxjs85sljk"}} -->
