@@ -1,8 +1,8 @@
 <?php
 session_start();
-include('includes/payment.php');
 error_reporting(1);
 include('includes/config.php');
+include('includes/payment.php');
 // makePayment();
 if(strlen($_SESSION['login'])==0)
   { 
@@ -116,7 +116,7 @@ foreach($results as $result)
             <ul class="vehicle_listing">
 <?php 
 $useremail=$_SESSION['login'];
- $sql = "SELECT tblvehicles.Vimage1 as Vimage1,tblvehicles.VehiclesTitle,tblvehicles.id as vid,tblbrands.BrandName,tblbooking.FromDate,tblbooking.ToDate,tblbooking.message,tblbooking.Status, tblbooking.DriverName, tblbooking.DriverPhone, tblvehicles.PricePerDay,DATEDIFF(tblbooking.ToDate,tblbooking.FromDate) as totaldays,tblbooking.BookingNumber  from tblbooking join tblvehicles on tblbooking.VehicleId=tblvehicles.id join tblbrands on tblbrands.id=tblvehicles.VehiclesBrand where tblbooking.userEmail=:useremail order by tblbooking.id desc";
+ $sql = "SELECT tblvehicles.Vimage1 as Vimage1,tblvehicles.VehiclesTitle,tblvehicles.id as vid,tblbrands.BrandName,tblbooking.FromDate,tblbooking.ToDate,tblbooking.message,tblbooking.Status, tblbooking.DriverName, tblbooking.DriverPhone, tblbooking.amount, tblvehicles.PricePerDay,DATEDIFF(tblbooking.ToDate,tblbooking.FromDate) as totaldays,tblbooking.BookingNumber  from tblbooking join tblvehicles on tblbooking.VehicleId=tblvehicles.id join tblbrands on tblbrands.id=tblvehicles.VehiclesBrand where tblbooking.userEmail=:useremail order by tblbooking.id desc";
 $query = $dbh -> prepare($sql);
 $query-> bindParam(':useremail', $useremail, PDO::PARAM_STR);
 $query->execute();
@@ -125,6 +125,9 @@ $cnt=1;
 if($query->rowCount() > 0)
 {
 foreach($results as $result)
+$_SESSION['Price']=$result->PricePerDay;
+$_SESSION['vid']=$result->vid;
+// $_SESSION['vid']=$result->vid;
 {  ?>
 
 <li>
@@ -137,6 +140,7 @@ foreach($results as $result)
                   <div style="float: left"><p><b>Message:</b> <?php echo htmlentities($result->message);?> </p></div>
                   <div style="float: left"><p><b>Driver:</b> <?php echo htmlentities($result->DriverName);?> </p></div>
                   <div style="float: left"><p><b>Driver Phone:</b> <?php echo htmlentities($result->DriverPhone);?> </p></div>
+                  <div style="float: left"><p><b>Amount:</b> <?php echo htmlentities($result->amount);?> </p></div>
                 </div>
                 <?php if($result->Status==1)
                   
@@ -162,11 +166,11 @@ foreach($results as $result)
                       <!-- <input type="text" id="name" name="name">
                       <button type="button" onclick="submitForm()">Say Hello</button> -->
                            <div class="clearfix"></div></div>
-                <div class="vehicle_status"> <button type='submit' class="btn outline btn-xs active-btn">Make Payment</button>
+                <div class="vehicle_status"> <button type='submit' class="btn outline btn-xs active-btn"  name="functionName" value="makePayment">Make Payment</button>
                            <div class="clearfix"></div>
                   </div>
                   </form>
-
+                  
               <?php } else if($result->Status==2) { ?>
  <div class="vehicle_status"> <a href="#" class="btn outline btn-xs">Cancelled</a>
             <div class="clearfix"></div>

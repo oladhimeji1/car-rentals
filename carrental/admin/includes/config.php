@@ -1,9 +1,19 @@
 <?php 
-// DB credentials.
+// mike DB credentials.
+// define('DB_HOST','localhost:3306');
+// define('DB_USER','root');
+// define('DB_PASS','');
+// define('DB_NAME','carrental');
+
+// ola DB credentials.
 define('DB_HOST','localhost:3302');
 define('DB_USER','root');
 define('DB_PASS','');
 define('DB_NAME','carrental');
+
+
+
+// // hosting DB credentials.
 // define('DB_HOST','localhost');
 // define('DB_USER','id21504807_root');
 // define('DB_PASS','Ola-2000');

@@ -1,39 +1,16 @@
 <?php
-    session_start();
-    include('includes/config.php');
-    error_reporting(1);
-    
-    // PHP code to handle the function call
-    $vid = 0;
-    if (isset($_POST['functionName'])) {
-        $functionName = $_POST['functionName'];
-        // echo "<script>console.log('normal:come');</script>";
-        
-        // Check which function to call
-        if ($functionName === 'makePayment') {
-            $useremail=strval($_SESSION['login']);
-            $price = intval($_SESSION['Price']);
-            $price = $price . '00';
-            $vid = intval($_SESSION['vid']);
-            
-    echo "<script>console.log('$price');</script>";
-            makePayment($price,$useremail);
-            // nametest();
-            // makePayment(70000, 'ola1@gmail.com');
-        }
-    }
-    
-   
-    
-    function makePayment($price, $useremail){
+   session_start();
+   include('includes/config.php');
+   error_reporting(1);
+    function makePayment($price, $userEmail){
+        echo "<script>console.log('normal:.$userEmail');</script>";
         // echo "<script>console.log($price)</script>";
     $url = "https://api.paystack.co/transaction/initialize";
 
     $fields = [
-        'email' => "$useremail",
+        'email' => "$userEmail",
         'amount' => "$price",
     ];
-
 
     $fields_string = http_build_query($fields);
 
@@ -54,50 +31,28 @@
     
     //execute post
     $result = curl_exec($ch);
-
+     echo "<script>console.log($result)</script>";
     $responseObject = json_decode($result, false);
-    
+        echo "<script>console.log($responseObject)</script>";
+    // {"status": authorization URL created","data":{"authorization_url":"https://checkout.paystack.com/sq1tu3g4hpugl4n","access_code":"sq1tu3g4hpugl4n","reference":"zxjs85sljk"}} 
     $reference = $responseObject->data->reference;
-
+        echo "<script>console.log($reference)</script>";
     // Check if the status is true
     if ($responseObject->status == 1) {
         // Get the authorization URL
         $authorizationUrl = $responseObject->data->authorization_url;
+            echo "<script>console.log($authorizationUrl)</script>";
         // Redirect the user to the authorization URL
-        
-        $_SESSION['authorizationUrl'] = $authorizationUrl;
-    $_SESSION['reference'] = $reference;
-    $_SESSION['vid'] = $vid;
-
-    // Redirect the user to the authorization URL
-    header("Location: $authorizationUrl");
-    exit();
-        // header("Location: $authorizationUrl");
-        // verify($reference, $vid);
-        // echo "<script>console.log('E reach here');</script>";
+        header("Location: $authorizationUrl");
         // exit();
+        verify($reference);
     } else {
+        // Handle the case where the status is not true
+        // echo "Error: Unable to get authorization URL";
         echo "<script>console.log('Error: Unable to get authorization URL');</script>";
     }
 }
-
-// Check if the required data is present in the session
-if (isset($_SESSION['authorizationUrl'], $_SESSION['reference'], $_SESSION['vid'])) {
-    // Retrieve data from the session
-    $authorizationUrl = $_SESSION['authorizationUrl'];
-    $reference = $_SESSION['reference'];
-    $vid = $_SESSION['vid'];
-
-    // Perform verification
-    verify($reference, $vid);
-
-    echo "<script>console.log('Verification complete');</script>";
-} else {
-    echo "<script>console.log('Error: Missing session data for verification');</script>";
-}
-
-    function verify($reference, $vid){
-    
+    function verify($reference){
         $curl = curl_init();
         $url = "https://api.paystack.co/transaction/verify/".$reference;
         curl_setopt_array($curl, array(
@@ -137,24 +92,28 @@ if (isset($_SESSION['authorizationUrl'], $_SESSION['reference'], $_SESSION['vid'
                 $amount = $numberAsString;
             }
 
-            $vid = $_SESSION['vid'];
-            $amount = "$amount"; // Replace with the actual value
+            // Output the result
+            echo "<script>console.log('$amount');</script>";
+            // Here i want to send the Amount and reference number to the database
+            // Update the tblbooking with this
+
+            // $amount 
+            // $reference
+            $useremail = $_SESSION['login'];
+            $amount = $amount; // Replace with the actual value
             $reference =$reference; // Replace with the actual value
-            global $dbh; // Use the global keyword to access $dbh within the function
-    
-            // $vid = $_SESSION['login'];
-            // $amount = "700"; // Replace with the actual value
-            // $reference = "reference"; // Replace with the actual value
-        
-            $updamrf = $dbh->prepare("UPDATE tblbooking SET amount = :amount, ref = :reference WHERE VehicleId = :vid");
-            // $updamrf = $dbh->prepare($con);
+            
+            $con = "UPDATE tblbooking SET amount = :amount, ref = :reference WHERE userEmail = :useremail";
+            $updamrf = $dbh->prepare($con);
             $updamrf->bindParam(':amount', $amount, PDO::PARAM_STR);
             $updamrf->bindParam(':reference', $reference, PDO::PARAM_STR);
-            $updamrf->bindParam(':vid', $vid, PDO::PARAM_STR);
+            $updamrf->bindParam(':useremail', $useremail, PDO::PARAM_STR);
             $updamrf->execute();
-            echo "<script>alert('$amount payed succefully!!');</script>";
+            
+            // $msg="Your Password succesfully changed";
+           
         }
     }
-    // makePayment(70000, 'ola1@gmail.com');
+
 ?>
 <!-- {"status": authorization URL created","data":{"authorization_url":"https://checkout.paystack.com/sq1tu3g4hpugl4n","access_code":"sq1tu3g4hpugl4n","reference":"zxjs85sljk"}} -->

@@ -25,6 +25,41 @@ session_start();
 include('includes/config.php');
 error_reporting(0);
 $vhid = intval($_POST['id']); // Use $_POST instead of $POST
+function calculateNextAvailableDay($dbh, $vhid, $fromdate, $todate)
+{
+    try {
+        // Sample query to get the earliest available day
+        $query = $dbh->prepare("SELECT MIN(ToDate) AS nextAvailableDay FROM tblbooking WHERE (:fromdate BETWEEN date(FromDate) and date(ToDate) || :todate BETWEEN date(FromDate) and date(ToDate) || date(FromDate) BETWEEN :fromdate and :todate) and VehicleId=:vhid");
+        $query->bindParam(':fromdate', $fromdate, PDO::PARAM_STR);
+        $query->bindParam(':todate', $todate, PDO::PARAM_STR);
+        $query->bindParam(':vhid', $vhid, PDO::PARAM_STR);
+        $query->execute();
+        $result = $query->fetch(PDO::FETCH_OBJ);
+
+        if ($result) {
+          $AvailableDay =strval($result->nextAvailableDay);
+          // $AvailableDay =(string) $result->nextAvailableDay;
+          // $AvailableDay = 'good';
+              // Declare a date
+              // $date = date_create($AvailableDay);
+              
+              // // Use date_add() function to add date object
+              // date_add($date, date_interval_create_from_date_string("01 days"));
+              
+              // return the added date
+  
+          // return date_format($date, "Y-m-d");
+          return $AvailableDay;
+
+        } else {
+            return false; // Handle the case where there are no available days
+        }
+    } catch (PDOException $e) {
+        // Log or display the error
+        error_log("Error executing SQL query: " . $e->getMessage());
+        return false;
+    }
+}
 if (isset($_POST['submit'])) {
 
     // This is where my code starts
@@ -53,7 +88,7 @@ if (isset($_POST['submit'])) {
 
           // echo "ID: $id, Driver Name: $driverName, Driver Phone: $driverPhone<br>";
       }
-
+    }
 
 
   // This is end of my code
@@ -92,23 +127,34 @@ if (isset($_POST['submit'])) {
         $query->bindParam(':driverPhone',$driverPhone,PDO::PARAM_STR);
         $query->execute();
         $lastInsertId = $dbh->lastInsertId();
-        if($lastInsertId)
-        {
-        echo "<script>alert('Booking successfull.');</script>";
-        echo "<script type='text/javascript'> document.location = 'my-booking.php'; </script>";
-        }
-        else 
-        {
-        echo "<script>alert('Something went wrong. Please try again');</script>";
+          if($lastInsertId)
+          {
+          echo "<script>alert('Booking successfull.');</script>";
+          echo "<script type='text/javascript'> document.location = 'my-booking.php'; </script>";
+          }
+          else 
+          {
+          echo "<script>alert('Something went wrong. Please try again');</script>";
+          echo "<script type='text/javascript'> document.location = 'car-listing.php'; </script>";
+          } 
+      }  else {
+        // Car is already booked for these days, find the next available day
+        $nextAvailableDay = calculateNextAvailableDay($dbh, $vhid, $fromdate, $todate);
+    
+        if ($nextAvailableDay !== false) {
+          $nextAvailableDay = (string)$nextAvailableDay;
+          $escapedMessage = json_encode("Car already booked for these days. You can book a day after this: $nextAvailableDay");
+          echo "<script>alert($escapedMessage);</script>";
+      } else {
+          echo "<script>alert('Error calculating the next available day');</script>";
+      }      
+    
         echo "<script type='text/javascript'> document.location = 'car-listing.php'; </script>";
-        } 
-      }  else{
-      echo "<script>alert('Car already booked for these days');</script>"; 
-      echo "<script type='text/javascript'> document.location = 'car-listing.php'; </script>";
-      }
-
-      }
+    }
+      
+      // }
 }
+
 ?>
 
 
