@@ -1,35 +1,16 @@
 <?php
-    session_start();
-    include('includes/config.php');
-    error_reporting(1);
-    
-    // PHP code to handle the function call
-    if (isset($_POST['functionName'])) {
-        $functionName = $_POST['functionName'];
-        // echo "<script>console.log('normal:come');</script>";
-        
-        // Check which function to call
-        if ($functionName === 'makePayment') {
-            $price = intval($_SESSION['Price']);
-            $userEmail = strval($_SESSION['login']);
-            makePayment($price,$userEmail);
-            // nametest();
-            // makePayment(70000, 'ola1@gmail.com');
-        }
-    }
-    
-   
-    
+   session_start();
+   include('includes/config.php');
+   error_reporting(1);
     function makePayment($price, $userEmail){
-        // verify($reference);
-        echo "<script>console.log('normal:.$price');</script>";   
+        echo "<script>console.log('normal:.$userEmail');</script>";
+        // echo "<script>console.log($price)</script>";
     $url = "https://api.paystack.co/transaction/initialize";
 
     $fields = [
         'email' => "$userEmail",
         'amount' => "$price",
     ];
-
 
     $fields_string = http_build_query($fields);
 
@@ -50,26 +31,28 @@
     
     //execute post
     $result = curl_exec($ch);
-
+     echo "<script>console.log($result)</script>";
     $responseObject = json_decode($result, false);
-    
+        echo "<script>console.log($responseObject)</script>";
+    // {"status": authorization URL created","data":{"authorization_url":"https://checkout.paystack.com/sq1tu3g4hpugl4n","access_code":"sq1tu3g4hpugl4n","reference":"zxjs85sljk"}} 
     $reference = $responseObject->data->reference;
-
+        echo "<script>console.log($reference)</script>";
     // Check if the status is true
     if ($responseObject->status == 1) {
         // Get the authorization URL
         $authorizationUrl = $responseObject->data->authorization_url;
+            echo "<script>console.log($authorizationUrl)</script>";
         // Redirect the user to the authorization URL
         header("Location: $authorizationUrl");
         // exit();
         verify($reference);
     } else {
+        // Handle the case where the status is not true
+        // echo "Error: Unable to get authorization URL";
         echo "<script>console.log('Error: Unable to get authorization URL');</script>";
     }
 }
     function verify($reference){
-        echo "<script>alert('Error calculating the next available day')";
-        // echo "<script>console.log('correct');</script>";
         $curl = curl_init();
         $url = "https://api.paystack.co/transaction/verify/".$reference;
         curl_setopt_array($curl, array(
@@ -117,22 +100,20 @@
             // $amount 
             // $reference
             $useremail = $_SESSION['login'];
-            $amount = "$amount 00"; // Replace with the actual value
+            $amount = $amount; // Replace with the actual value
             $reference =$reference; // Replace with the actual value
-            global $dbh; // Use the global keyword to access $dbh within the function
-    
-            // $useremail = $_SESSION['login'];
-            // $amount = "700"; // Replace with the actual value
-            // $reference = "reference"; // Replace with the actual value
-        
-            $updamrf = $dbh->prepare("UPDATE tblbooking SET amount = :amount, ref = :reference WHERE userEmail = :useremail");
-            // $updamrf = $dbh->prepare($con);
+            
+            $con = "UPDATE tblbooking SET amount = :amount, ref = :reference WHERE userEmail = :useremail";
+            $updamrf = $dbh->prepare($con);
             $updamrf->bindParam(':amount', $amount, PDO::PARAM_STR);
             $updamrf->bindParam(':reference', $reference, PDO::PARAM_STR);
             $updamrf->bindParam(':useremail', $useremail, PDO::PARAM_STR);
             $updamrf->execute();
+            
+            // $msg="Your Password succesfully changed";
+           
         }
     }
-    // makePayment(70000, 'ola1@gmail.com');
+
 ?>
 <!-- {"status": authorization URL created","data":{"authorization_url":"https://checkout.paystack.com/sq1tu3g4hpugl4n","access_code":"sq1tu3g4hpugl4n","reference":"zxjs85sljk"}} -->

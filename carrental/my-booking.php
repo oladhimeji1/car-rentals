@@ -1,8 +1,8 @@
 <?php
 session_start();
-include('includes/payment.php');
 error_reporting(1);
 include('includes/config.php');
+include('includes/payment.php');
 // makePayment();
 if(strlen($_SESSION['login'])==0)
   { 
@@ -125,6 +125,7 @@ $cnt=1;
 if($query->rowCount() > 0)
 {
 foreach($results as $result)
+$_SESSION['Price']=$result->PricePerDay;
 {  ?>
 
 <li>
@@ -162,11 +163,11 @@ foreach($results as $result)
                       <!-- <input type="text" id="name" name="name">
                       <button type="button" onclick="submitForm()">Say Hello</button> -->
                            <div class="clearfix"></div></div>
-                <div class="vehicle_status"> <button type='submit' class="btn outline btn-xs active-btn">Make Payment</button>
+                <div class="vehicle_status"> <button type='submit' class="btn outline btn-xs active-btn"  name="functionName" value="makePayment">Make Payment</button>
                            <div class="clearfix"></div>
                   </div>
                   </form>
-
+                  
               <?php } else if($result->Status==2) { ?>
  <div class="vehicle_status"> <a href="#" class="btn outline btn-xs">Cancelled</a>
             <div class="clearfix"></div>
